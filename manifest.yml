@@ -4,7 +4,13 @@ applications:
   disk_quota: 1024M
   host: phonebook
   name: phonebook
+  description: This application is a sample REST Phonebook that uses an SQL DB, you can use it for the Integration Testing Service Tutorials.
   path: phonebook.war
   domain: mybluemix.net
   instances: 1
   memory: 512M
+
+declared-services:
+  phonebook-sqldb:
+    label: sqldb
+    plan: sqldb_free
