@@ -39,7 +39,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/phonebook")
+@Path("/")
 /**
  * CRUD service for phonebook table. It uses REST Style
  *
@@ -58,6 +58,13 @@ public class PhonebookServiceHandler {
     @Produces(MediaType.APPLICATION_JSON)
     public PhonebookEntries queryPhonebook(@QueryParam("title") final String title,
             @QueryParam("firstname") final String firstname, @QueryParam("lastname") final String lastname) {
+
+        final List<PhonebookEntry> checkList = em.createQuery(
+                "SELECT t FROM PhonebookEntry t", PhonebookEntry.class) //$NON-NLS-1$
+                .getResultList();
+        if (checkList.size() == 0) {
+            createSampleData();
+        }
 
         final CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         final CriteriaQuery<PhonebookEntry> criteriaQuery = criteriaBuilder.createQuery(PhonebookEntry.class);
@@ -94,22 +101,6 @@ public class PhonebookServiceHandler {
         } else {
             throw new NotFoundException();
         }
-
-    }
-
-    @GET
-    @Path("/populate")
-    @Produces(MediaType.APPLICATION_JSON)
-    public PhonebookEntries populateDatabase() {
-        List<PhonebookEntry> list = em.createQuery("SELECT t FROM PhonebookEntry t", PhonebookEntry.class) //$NON-NLS-1$
-                .getResultList();
-        if (list.size() == 0) {
-            createSampleData();
-            list = em.createQuery("SELECT t FROM PhonebookEntry t", PhonebookEntry.class).getResultList(); //$NON-NLS-1$
-        }
-        final PhonebookEntries entries = new PhonebookEntries();
-        entries.setEntries(list);
-        return entries;
 
     }
 
